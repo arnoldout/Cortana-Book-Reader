@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+  <CommandSet xml:lang="en-us" Name="UniversalAppCommandSet_en-us">
+    <AppName> Book Reader </AppName>
+    <Example> Book Reader Read Alice in Wonderland</Example>
+
+    <Command Name="readBook">
+      <Example> Read Alice in Wonderland </Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> read [the] [a] [book] {bookName} </ListenFor>
+      <Feedback> Reading {bookName} </Feedback>
+      <Navigate />
+    </Command>
+    <PhraseList Label="bookName">
+      <Item>Alice in WonderLand</Item>
+    </PhraseList>
+
+  </CommandSet>
+</VoiceCommands>
