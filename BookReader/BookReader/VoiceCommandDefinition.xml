@@ -10,7 +10,15 @@
       <Feedback> Reading {bookName} </Feedback>
       <Navigate />
     </Command>
-    <PhraseList Label="bookName">
+    <Command Name="whenIsTripToDestination">
+      <Example> When is my trip to Las Vegas?</Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> when is [my] trip to {destination}</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> when is [my] {builtin:AppName} trip to {destination} </ListenFor>
+      <Feedback> Looking for trip to {destination}</Feedback>
+      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
+    </Command>
+    
+      <PhraseList Label="bookName">
       <Item>Alice in WonderLand</Item>
     </PhraseList>
 
