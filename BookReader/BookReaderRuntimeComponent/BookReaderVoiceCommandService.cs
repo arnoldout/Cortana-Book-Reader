@@ -3,16 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace BookReader.Runtime
 {
     public sealed class BookReaderVoiceCommandService : IBackgroundTask
     {
-        public void Run(IBackgroundTaskInstance taskInstance)
+        private BackgroundTaskDeferral serviceDeferral;
+        VoiceCommandServiceConnection voiceServiceConnection;
+        public async void Run(IBackgroundTaskInstance taskInstance)
         {
-            //download damiens setup
-            throw new NotImplementedException();
+            //Take a service deferral so the service isn&#39;t terminated.
+            this.serviceDeferral = taskInstance.GetDeferral();
+            var triggerDetails = taskInstance.TriggerDetails as AppServiceTriggerDetails;
+            if (triggerDetails != null && triggerDetails.Name == "AdventureWorksVoiceServiceEndpoint")
+            {
+                var destinationsContentTiles = new List<VoiceCommandContentTile>();
+
+                var destinationTile = new VoiceCommandContentTile();
+                destinationTile.ContentTileType =
+                  VoiceCommandContentTileType.TitleWith68x68IconAndText;
+                // The user can tap on the visual content to launch the app. 
+                // Pass in a launch argument to enable the app to deep link to a 
+                // page relevant to the item displayed on the content tile.
+                destinationTile.AppLaunchArgument =
+                  string.Format("destination={0}”, “Las Vegas");
+                destinationTile.Title = "Las Vegas";
+                destinationTile.TextLine1 = "August 3rd 2015";
+                destinationsContentTiles.Add(destinationTile);
+                var userMessage = new VoiceCommandUserMessage();
+                userMessage.DisplayMessage = "Here’s your trip.";
+                userMessage.SpokenMessage = "Your trip to Vegas is on August 3rd.";
+                var response = VoiceCommandResponse.CreateResponse(userMessage, destinationsContentTiles);
+                await voiceServiceConnection.ReportSuccessAsync(response);
+            }
         }
     }
 }
