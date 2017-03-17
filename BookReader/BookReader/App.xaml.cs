@@ -85,8 +85,7 @@ namespace BookReader
                 try
                 {
                     System.Diagnostics.Debug.WriteLine("VCD loading attempted. ");
-                    StorageFile vcdFile = await
-                        Package.Current.InstalledLocation.GetFileAsync(@"VoiceCommandDefinition.xml");
+                    StorageFile vcdFile = await Package.Current.InstalledLocation.GetFileAsync(@"VoiceCommandDefinition.xml");
                     await VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(vcdFile);
                 }
                 catch (Exception ex)
@@ -99,12 +98,11 @@ namespace BookReader
         /// Invoked when the application is activated by some other means other than launching
         /// </summary>
         /// <param name="e">Event data for the event.</param>
-        protected async override void OnActivated(IActivatedEventArgs args)
+        protected override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
             // handle when the app is launched by Cortana
-            if (args.Kind != ActivationKind.VoiceCommand)
-                return;
+            if (args.Kind != ActivationKind.VoiceCommand) return;
             Frame rootFrame = Window.Current.Content as Frame;
 
             // now get the parameters pased in
@@ -142,6 +140,10 @@ namespace BookReader
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+        private string SemanticInterpretation(string interpretationKey, SpeechRecognitionResult speechRecognitionResult)
+        {
+            return speechRecognitionResult.SemanticInterpretation.Properties[interpretationKey].FirstOrDefault();
         }
 
     }

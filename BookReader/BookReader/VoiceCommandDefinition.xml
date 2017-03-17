@@ -8,18 +8,20 @@
       <Example> Read Alice in Wonderland </Example>
       <ListenFor RequireAppName="BeforeOrAfterPhrase"> read [the] [a] [book] {bookName} </ListenFor>
       <Feedback> Reading {bookName} </Feedback>
-      <Navigate />
+      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
+      <!--<Navigate />-->
     </Command>
     <Command Name="whenIsTripToDestination">
       <Example> When is my trip to Las Vegas?</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> when is [my] trip to {destination}</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> when is [my] {builtin:AppName} trip to {destination} </ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> when is [my] trip to {bookName}</ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> when is [my] {builtin:AppName} trip to {bookName} </ListenFor>
       <Feedback> Looking for trip to {destination}</Feedback>
       <VoiceCommandService Target="BookReaderVoiceCommandService"/>
     </Command>
     
       <PhraseList Label="bookName">
       <Item>Alice in WonderLand</Item>
+      <Item>India</Item>
     </PhraseList>
 
   </CommandSet>

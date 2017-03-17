@@ -8,7 +8,8 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="ReadBook" Click="ReadBook_Click"></Button>
+        <ListBox x:Name="listBooks"></ListBox>
+        <Button Click="ReadBook_Click"></Button>
         <MediaElement x:Name="mediaElement" />
     </Grid>
 </Page>

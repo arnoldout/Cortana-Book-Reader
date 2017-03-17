@@ -36,7 +36,9 @@ namespace BookReader
         {
             this.InitializeComponent();
             //parseEpub(@"c:\users\olivr\documents\visual studio 2015\Projects\BookReader\BookReader\AnimalFarm.epub");
-
+            List<String> t = new List<String>();
+            
+            listBooks.ItemsSource = t;
         }
 
         public async void parseEpub(String zipPath)
@@ -50,7 +52,43 @@ namespace BookReader
 
         private async void ReadBook_Click(object sender, RoutedEventArgs e)
         {
-            String str = new TxtParser().readFile("19033-8.txt");
+            var folder = ApplicationData.Current.LocalFolder;
+            var files = await folder.GetFilesAsync();
+            var desiredFile = files.FirstOrDefault(x => x.Name == "books.txt");
+            if(desiredFile==null)
+            {
+                desiredFile = await folder.CreateFileAsync("books.txt");
+            }
+            //open file picker
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            //show icons as thumbnails
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            //open on desktop if not opened before
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+            //only need txt or epub files
+            picker.FileTypeFilter.Add(".txt");
+            picker.FileTypeFilter.Add(".epub");
+
+            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+            
+            if (file != null)
+            {
+                IRandomAccessStream sr = await file.OpenReadAsync();
+                byte[] result;
+                using (Stream stream = await file.OpenStreamForReadAsync())
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                        result = memoryStream.ToArray();
+                    }
+                }
+                await FileIO.WriteTextAsync(file, result);
+            }
+            
+
+
+            String str = new TxtParser().readFile(@st2r);
             await new Speaker().SpeakTextAsync(str, this.mediaElement);
 
         }
