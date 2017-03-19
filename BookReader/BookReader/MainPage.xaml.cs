@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookReader.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -32,36 +33,13 @@ namespace BookReader
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        List<String> books = new List<string>();
+        BooksVM books;
         public MainPage()
         {
             this.InitializeComponent();
+            books = new BooksVM();
             //parseEpub(@"c:\users\olivr\documents\visual studio 2015\Projects\BookReader\BookReader\AnimalFarm.epub");
         }
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            books = await getBooks();
-            listBooks.ItemsSource = books;
-        }
-        public async Task<List<String>> getBooks()
-        {
-            var folder = ApplicationData.Current.LocalFolder;
-            try
-            {
-                folder = await folder.GetFolderAsync("books");
-                IReadOnlyList<StorageFile> files = await folder.GetFilesAsync();
-                foreach (StorageFile s in files)
-                {
-                    books.Add(s.Name);
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                await folder.CreateFolderAsync("books");
-            }
-            return books;
-        }
-
         public async void parseEpub(String zipPath)
         {
             var localFolder = ApplicationData.Current.LocalFolder;
@@ -101,12 +79,11 @@ namespace BookReader
                 var subFolder = await folder.GetFolderAsync("books");
                 if (!await isFilePresent(file.Name, subFolder))
                 {
-                    listBooks = new ListBox();
-                    books.Add(file.Name);
-                    listBooks.ItemsSource = books;
-
                     file = await subFolder.CreateFileAsync(file.Name);
                     await FileIO.WriteBytesAsync(file, result);
+                    books.AddBook(file.Name);
+                    //update bindings
+                    this.DataContextChanged += (s, DataContextChangedEventArgs) => this.Bindings.Update();
                 }
                 else
                 {
@@ -120,6 +97,15 @@ namespace BookReader
             var item = await folder.TryGetItemAsync(fileName);
             return item != null;
         }
+
+        private async void listBooks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBoxItem lbi = ((sender as ListBox).SelectedItem as ListBoxItem);
+            var folder = ApplicationData.Current.LocalFolder;
+            var subFolder = await folder.GetFolderAsync("books");
+            var file = await subFolder.GetFileAsync(lbi.Content.ToString());
+
+
+        }
     }
 }
-0

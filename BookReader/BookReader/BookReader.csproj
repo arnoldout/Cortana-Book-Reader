@@ -110,6 +110,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TxtParser.cs" />
+    <Compile Include="ViewModels\BooksVM.cs" />
+    <Compile Include="ViewModels\NotificationBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

@@ -5,11 +5,27 @@
     xmlns:local="using:BookReader"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:BookReader.ViewModels"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ListBox x:Name="listBooks"></ListBox>
-        <Button Click="ReadBook_Click"></Button>
-        <MediaElement x:Name="mediaElement" />
+    <Grid Background="#FF58CDC5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="15*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="#C74350">
+            <TextBlock Text="Books" FontFamily="Verdana" HorizontalAlignment="Center" />
+        </Grid>
+        <Grid Grid.Row="1">
+            <ListView Background="Transparent" FontFamily="Verdana" HorizontalAlignment="Center" x:Name="listBooks" ItemsSource="{x:Bind books.Books, Mode=OneWay}" SelectionChanged="listBooks_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBox Text="{Binding}" Width="1*" TextAlignment="Center"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Click="ReadBook_Click"></Button>
+            <MediaElement x:Name="mediaElement"/>
+        </Grid>
     </Grid>
 </Page>
