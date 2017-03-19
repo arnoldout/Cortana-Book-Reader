@@ -32,13 +32,34 @@ namespace BookReader
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        List<String> books = new List<string>();
         public MainPage()
         {
             this.InitializeComponent();
             //parseEpub(@"c:\users\olivr\documents\visual studio 2015\Projects\BookReader\BookReader\AnimalFarm.epub");
-            List<String> t = new List<String>();
-            
-            listBooks.ItemsSource = t;
+        }
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            books = await getBooks();
+            listBooks.ItemsSource = books;
+        }
+        public async Task<List<String>> getBooks()
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            try
+            {
+                folder = await folder.GetFolderAsync("books");
+                IReadOnlyList<StorageFile> files = await folder.GetFilesAsync();
+                foreach (StorageFile s in files)
+                {
+                    books.Add(s.Name);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                await folder.CreateFolderAsync("books");
+            }
+            return books;
         }
 
         public async void parseEpub(String zipPath)
@@ -52,13 +73,6 @@ namespace BookReader
 
         private async void ReadBook_Click(object sender, RoutedEventArgs e)
         {
-            var folder = ApplicationData.Current.LocalFolder;
-            var files = await folder.GetFilesAsync();
-            var desiredFile = files.FirstOrDefault(x => x.Name == "books.txt");
-            if(desiredFile==null)
-            {
-                desiredFile = await folder.CreateFileAsync("books.txt");
-            }
             //open file picker
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             //show icons as thumbnails
@@ -70,7 +84,7 @@ namespace BookReader
             picker.FileTypeFilter.Add(".epub");
 
             Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-            
+
             if (file != null)
             {
                 IRandomAccessStream sr = await file.OpenReadAsync();
@@ -83,14 +97,29 @@ namespace BookReader
                         result = memoryStream.ToArray();
                     }
                 }
-                await FileIO.WriteTextAsync(file, result);
+                var folder = ApplicationData.Current.LocalFolder;
+                var subFolder = await folder.GetFolderAsync("books");
+                if (!await isFilePresent(file.Name, subFolder))
+                {
+                    listBooks = new ListBox();
+                    books.Add(file.Name);
+                    listBooks.ItemsSource = books;
+
+                    file = await subFolder.CreateFileAsync(file.Name);
+                    await FileIO.WriteBytesAsync(file, result);
+                }
+                else
+                {
+                    MessageDialog dialog = new MessageDialog("Book with that name already in library");
+                    await dialog.ShowAsync();
+                }
             }
-            
-
-
-            String str = new TxtParser().readFile(@st2r);
-            await new Speaker().SpeakTextAsync(str, this.mediaElement);
-
+        }
+        public async Task<bool> isFilePresent(string fileName, StorageFolder folder)
+        {
+            var item = await folder.TryGetItemAsync(fileName);
+            return item != null;
         }
     }
 }
+0
