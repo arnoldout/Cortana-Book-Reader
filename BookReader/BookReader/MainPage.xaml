@@ -8,24 +8,34 @@
     xmlns:viewModels="using:BookReader.ViewModels"
     mc:Ignorable="d">
 
-    <Grid Background="#FF58CDC5">
+    <Grid Background="#8155A4">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="15*"></RowDefinition>
+            <RowDefinition Height="17*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Background="#C74350">
-            <TextBlock Text="Books" FontFamily="Verdana" HorizontalAlignment="Center" />
+        <Grid Grid.Row="0" Background="#8155A4">
+            <TextBlock Text="Books" FontFamily="Verdana" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
         <Grid Grid.Row="1">
-            <ListView Background="Transparent" FontFamily="Verdana" HorizontalAlignment="Center" x:Name="listBooks" ItemsSource="{x:Bind books.Books, Mode=OneWay}" SelectionChanged="listBooks_SelectionChanged">
+            <MediaElement x:Name="mediaElement"/>
+            
+            <ListView Background="Transparent" FontFamily="Verdana" HorizontalAlignment="Stretch" x:Name="listBooks" ItemsSource="{x:Bind books.Books, Mode=OneWay}" SelectionChanged="listBooks_SelectionChanged">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBox Text="{Binding}" Width="1*" TextAlignment="Center"/>
+                    <DataTemplate >
+                        <TextBlock Text="{Binding}" TextAlignment="Left" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Background" Value="#FFFFFF"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
-            <Button Click="ReadBook_Click"></Button>
-            <MediaElement x:Name="mediaElement"/>
+        </Grid>
+        <Grid Grid.Row="2" VerticalAlignment="Bottom">
+            <Button Click="ReadBook_Click" Content="Add Book" Background="#8155A4" HorizontalAlignment="Stretch"></Button>
         </Grid>
     </Grid>
 </Page>

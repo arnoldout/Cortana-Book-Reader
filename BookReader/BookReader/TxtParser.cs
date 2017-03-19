@@ -4,22 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace BookReader
 {
     class TxtParser
     {
-        public String readFile(String txtfile)
+        public async Task<string> readFile(StorageFile file)
         {
-            TextReader textReader = File.OpenText(txtfile);
-            String line = "";
-            StringBuilder sb = new StringBuilder();
-
-            while ((line = textReader.ReadLine()) != null)
+            if (file.ContentType.Equals("txt"))
             {
-                sb.Append(line);
+                return await FileIO.ReadTextAsync(file);
             }
-            return sb.ToString();
+            return "We don't support Epubs at the moment";
         }
     }
 }

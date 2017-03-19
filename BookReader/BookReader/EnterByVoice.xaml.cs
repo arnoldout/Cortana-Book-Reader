@@ -7,6 +7,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
+using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -32,7 +33,9 @@ namespace BookReader
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             this.InitializeComponent();
-            try
+            StorageFile commandArgs = e.Parameter as StorageFile;
+            await new Speaker().SpeakTextAsync(await new TxtParser().readFile(commandArgs), this.media);
+            /*try
             {
                 VoiceCommandActivatedEventArgs commandArgs = e.Parameter as VoiceCommandActivatedEventArgs;
                 SpeechRecognitionResult speechRecognitionResult = commandArgs.Result;
@@ -69,7 +72,7 @@ namespace BookReader
             {
                 MessageDialog msgDialog = new MessageDialog("Crashed");
                 await msgDialog.ShowAsync();
-            }
+            }*/
         }
     }
 }

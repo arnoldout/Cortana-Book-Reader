@@ -100,11 +100,11 @@ namespace BookReader
 
         private async void listBooks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListBoxItem lbi = ((sender as ListBox).SelectedItem as ListBoxItem);
+            var item = e.AddedItems?.FirstOrDefault();
+            String bookName = (String)item;
             var folder = ApplicationData.Current.LocalFolder;
             var subFolder = await folder.GetFolderAsync("books");
-            var file = await subFolder.GetFileAsync(lbi.Content.ToString());
-
+            var file = await subFolder.GetFileAsync(bookName);
 
         }
     }

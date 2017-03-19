@@ -98,24 +98,59 @@ namespace BookReader
         /// Invoked when the application is activated by some other means other than launching
         /// </summary>
         /// <param name="e">Event data for the event.</param>
-        protected override void OnActivated(IActivatedEventArgs args)
+        protected override async void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
             // handle when the app is launched by Cortana
             if (args.Kind != ActivationKind.VoiceCommand) return;
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // now get the parameters pased in
-            VoiceCommandActivatedEventArgs commandArgs = args as VoiceCommandActivatedEventArgs;
 
+            try
+            {
+                // now get the parameters pased in
+                VoiceCommandActivatedEventArgs commandArgs = args as VoiceCommandActivatedEventArgs;
+                SpeechRecognitionResult speechRecognitionResult = commandArgs.Result;
+                string voiceCommandName = speechRecognitionResult.RulePath[0];
+                string textSpoken = speechRecognitionResult.Text;
+                IReadOnlyList<string> recognisedVoiceCommandPhrases;
+
+                System.Diagnostics.Debug.WriteLine("Voice CommandName: " + voiceCommandName);
+                System.Diagnostics.Debug.WriteLine("text Spoken: " + textSpoken);
+
+                MessageDialog msgDialog = new MessageDialog("");
+
+                switch (voiceCommandName)
+                {
+                    case "readBook":
+                        {
+
+                            break;
+                        }
+                    default:
+                        {
+                            msgDialog.Content = "Unknown Command";
+                            break;
+
+                        }
+                }   // end Switch(voiceCommandName)
+
+                System.Diagnostics.Debug.WriteLine("go to main page Now ");
+            }
+            catch (Exception)
+            {
+                MessageDialog msgDialog = new MessageDialog("Crashed");
+                await msgDialog.ShowAsync();
+            }
             if (rootFrame == null)
             {
+
                 rootFrame = new Frame();
-                //                App.NavigationService = new NavigationService(rootFrame);
+                //App.NavigationService = new NavigationService(rootFrame);
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 Window.Current.Content = rootFrame;
             }
-            rootFrame.Navigate(typeof(EnterByVoice), commandArgs);
+            rootFrame.Navigate(typeof(EnterByVoice));//,args);
 
         }
         /// <summary>
