@@ -114,11 +114,11 @@ namespace BookReader
                 string voiceCommandName = speechRecognitionResult.RulePath[0];
                 string textSpoken = speechRecognitionResult.Text;
                 IReadOnlyList<string> recognisedVoiceCommandPhrases;
-
+                MessageDialog msgDialog = new MessageDialog("vcn:"+voiceCommandName+"txtspn"+textSpoken);
+                await msgDialog.ShowAsync();
                 System.Diagnostics.Debug.WriteLine("Voice CommandName: " + voiceCommandName);
                 System.Diagnostics.Debug.WriteLine("text Spoken: " + textSpoken);
 
-                MessageDialog msgDialog = new MessageDialog("");
 
                 switch (voiceCommandName)
                 {
