@@ -124,7 +124,18 @@ namespace BookReader
                 {
                     case "readBook":
                         {
-
+                            string bookName = this.SemanticInterpretation("bookName", speechRecognitionResult);
+                            var folder = ApplicationData.Current.LocalFolder;
+                            var subFolder = await folder.GetFolderAsync("books");
+                            var files = await subFolder.GetFilesAsync();
+                            foreach(StorageFile sf in files)
+                            {
+                                if(sf.DisplayName.Equals(bookName))
+                                {
+                                    rootFrame.Navigate(typeof(EnterByVoice),sf);
+                                    return;
+                                }
+                            }
                             break;
                         }
                     default:

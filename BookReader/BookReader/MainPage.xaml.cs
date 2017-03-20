@@ -37,6 +37,8 @@ namespace BookReader
         public MainPage()
         {
             this.InitializeComponent();
+            var folder = ApplicationData.Current.LocalFolder;
+            
             books = new BooksVM();
             //parseEpub(@"c:\users\olivr\documents\visual studio 2015\Projects\BookReader\BookReader\AnimalFarm.epub");
         }
@@ -104,8 +106,8 @@ namespace BookReader
             String bookName = (String)item;
             var folder = ApplicationData.Current.LocalFolder;
             var subFolder = await folder.GetFolderAsync("books");
-            var file = await subFolder.GetFileAsync(bookName);
-
+            var sf = await subFolder.GetFileAsync(bookName);
+            Frame.Navigate(typeof(EnterByVoice), sf);
         }
     }
 }
