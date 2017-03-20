@@ -133,7 +133,6 @@ namespace BookReader
                                 if(sf.DisplayName.Equals(bookName))
                                 {
                                     rootFrame.Navigate(typeof(EnterByVoice),sf);
-                                    return;
                                 }
                             }
                             break;

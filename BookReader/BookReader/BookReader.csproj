@@ -101,6 +101,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Book.cs" />
+    <Compile Include="BookSegments.cs" />
     <Compile Include="Speaker.cs" />
     <Compile Include="EnterByVoice.xaml.cs">
       <DependentUpon>EnterByVoice.xaml</DependentUpon>

@@ -12,7 +12,8 @@ namespace BookReader
     {
         public async Task<string> readFile(StorageFile file)
         {
-            if (file.ContentType.Equals("txt"))
+            String s = file.ContentType;
+            if (file.FileType.Equals(".txt"))
             {
                 return await FileIO.ReadTextAsync(file);
             }

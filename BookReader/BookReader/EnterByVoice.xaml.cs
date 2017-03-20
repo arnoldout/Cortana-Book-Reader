@@ -34,8 +34,13 @@ namespace BookReader
         {
             this.InitializeComponent();
             StorageFile commandArgs = e.Parameter as StorageFile;
-            String s = commandArgs.DisplayName;
-            await new Speaker().SpeakTextAsync(await new TxtParser().readFile(commandArgs), this.media);
+            String s = await new TxtParser().readFile(commandArgs);
+            Book b = new Book(s);
+            String read = "";
+            while((read = b.popSegment())!=null)
+            {
+                await new Speaker().SpeakTextAsync(s, this.media);
+            }
         }
     }
 }
