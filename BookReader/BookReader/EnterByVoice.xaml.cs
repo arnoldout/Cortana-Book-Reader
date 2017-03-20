@@ -34,45 +34,8 @@ namespace BookReader
         {
             this.InitializeComponent();
             StorageFile commandArgs = e.Parameter as StorageFile;
+            String s = commandArgs.DisplayName;
             await new Speaker().SpeakTextAsync(await new TxtParser().readFile(commandArgs), this.media);
-            /*try
-            {
-                VoiceCommandActivatedEventArgs commandArgs = e.Parameter as VoiceCommandActivatedEventArgs;
-                SpeechRecognitionResult speechRecognitionResult = commandArgs.Result;
-                string voiceCommandName = speechRecognitionResult.RulePath[0];
-                string textSpoken = speechRecognitionResult.Text;
-                IReadOnlyList<string> recognisedVoiceCommandPhrases;
-
-                System.Diagnostics.Debug.WriteLine("Voice CommandName: " + voiceCommandName);
-                System.Diagnostics.Debug.WriteLine("text Spoken: " + textSpoken);
-
-                MessageDialog msgDialog = new MessageDialog("");
-
-                switch (voiceCommandName)
-                {
-                    case "readBook":
-                        {
-                            System.Diagnostics.Debug.WriteLine("readBook");
-                            msgDialog.Content = "readBook";
-                            break;
-                        }
-                    default:
-                        {
-                            msgDialog.Content = "Unknown Command";
-                            break;
-
-                        }
-                }   // end Switch(voiceCommandName)
-                await msgDialog.ShowAsync();
-                await new Speaker().SpeakTextAsync("Alice In Wonderland", this.media);
-                await new Speaker().SpeakTextAsync(new TxtParser().readFile("19033-8.txt"), this.media);
-                System.Diagnostics.Debug.WriteLine("go to main page Now ");
-            }
-            catch (Exception)
-            {
-                MessageDialog msgDialog = new MessageDialog("Crashed");
-                await msgDialog.ShowAsync();
-            }*/
         }
     }
 }
