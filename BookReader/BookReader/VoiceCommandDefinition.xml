@@ -1,28 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
-  <CommandSet xml:lang="en-us" Name="UniversalAppCommandSet_en-us">
+  <CommandSet xml:lang="en-gb" Name="UniversalAppCommandSet_en-gb">
     <AppName> Book Reader </AppName>
     <Example> Book Reader Read Alice in Wonderland</Example>
-
     <Command Name="readBook">
       <Example> Read Alice in Wonderland </Example>
       <ListenFor RequireAppName="BeforeOrAfterPhrase"> read [the] [a] [book] {bookName} </ListenFor>
-      <Feedback> Reading {bookName} </Feedback>
-      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
+      <Feedback> Reading {bookName} </Feedback> 
+      <Navigate />
+      <!--<VoiceCommandService Target="BookReaderVoiceCommandService"/>-->
       <!--<Navigate />-->
     </Command>
     <Command Name="whenIsTripToDestination">
-      <Example> When is my trip to Las Vegas?</Example>
-      <ListenFor RequireAppName="BeforeOrAfterPhrase"> when is [my] trip to {bookName}</ListenFor>
-      <ListenFor RequireAppName="ExplicitlySpecified"> when is [my] {builtin:AppName} trip to {bookName} </ListenFor>
-      <Feedback> Looking for trip to {destination}</Feedback>
-      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
+      <Example> When is my trip to India</Example>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> when is [my] trip to {bookName} </ListenFor>
+      <Feedback> Looking for trip to {bookName}</Feedback>
+      <Navigate />
+      <!--<VoiceCommandService Target="BookReaderVoiceCommandService"/>-->
     </Command>
-    
-      <PhraseList Label="bookName">
+    <PhraseList Label="bookName">
       <Item>Alice in WonderLand</Item>
       <Item>India</Item>
     </PhraseList>
-
   </CommandSet>
 </VoiceCommands>

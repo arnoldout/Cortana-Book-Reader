@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -69,6 +70,39 @@ namespace BookReader
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("VCD loading attempted. ");
+                StorageFile vcdFile = await Package.Current.InstalledLocation.GetFileAsync("VoiceCommandDefinition.xml");
+
+                await VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(vcdFile);
+
+
+                VoiceCommandDefinition commandDefinitions;
+
+                String countryCode = CultureInfo.CurrentCulture.Name.ToLower();
+                if (countryCode.Length == 0)
+                {
+                    countryCode = "en-us";
+                }
+                if (VoiceCommandDefinitionManager.InstalledCommandDefinitions.TryGetValue("UniversalAppCommandSet_en-gb", out commandDefinitions))
+                {
+                    List<string> books = new List<string>();
+                    var folder = ApplicationData.Current.LocalFolder;
+                    var subFolder = await folder.GetFolderAsync("books");
+                    var files = await subFolder.GetFilesAsync();
+                    foreach (StorageFile sf in files)
+                    {
+                        books.Add(sf.DisplayName);
+                    }
+
+                    await commandDefinitions.SetPhraseListAsync("bookName", books);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("VCD load error. ", ex);
+            }
 
             if (e.PrelaunchActivated == false)
             {
@@ -81,17 +115,6 @@ namespace BookReader
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
-
-                try
-                {
-                    System.Diagnostics.Debug.WriteLine("VCD loading attempted. ");
-                    StorageFile vcdFile = await Package.Current.InstalledLocation.GetFileAsync(@"VoiceCommandDefinition.xml");
-                    await VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(vcdFile);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("VCD load error. ", ex);
-                }
             }
         }
         /// <summary>
