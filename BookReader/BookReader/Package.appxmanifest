@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="d0392c72-40c4-48f8-93bb-2f741a6a758c" Publisher="CN=Olivr" Version="1.0.15.0" />
+  <Identity Name="d0392c72-40c4-48f8-93bb-2f741a6a758c" Publisher="CN=Olivr" Version="1.0.18.0" />
   <mp:PhoneIdentity PhoneProductId="d0392c72-40c4-48f8-93bb-2f741a6a758c" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>BookReader</DisplayName>
@@ -21,10 +21,10 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.personalAssistantLaunch" />
         <uap:Extension Category="windows.appService" EntryPoint="BookReader.Runtime.BookReaderVoiceCommandService">
           <uap:AppService Name="BookReaderVoiceCommandService" />
         </uap:Extension>
+        <uap:Extension Category="windows.personalAssistantLaunch" />
       </Extensions>
     </Application>
   </Applications>

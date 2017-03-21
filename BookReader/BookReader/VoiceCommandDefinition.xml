@@ -15,8 +15,7 @@
       <Example> When is my trip to India</Example>
       <ListenFor RequireAppName="BeforeOrAfterPhrase"> when is [my] trip to {bookName} </ListenFor>
       <Feedback> Looking for trip to {bookName}</Feedback>
-      <Navigate />
-      <!--<VoiceCommandService Target="BookReaderVoiceCommandService"/>-->
+      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
     </Command>
     <PhraseList Label="bookName">
       <Item>Alice in WonderLand</Item>
