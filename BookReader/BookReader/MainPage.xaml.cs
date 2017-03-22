@@ -79,11 +79,32 @@ namespace BookReader
                 }
                 var folder = ApplicationData.Current.LocalFolder;
                 var subFolder = await folder.GetFolderAsync("books");
+                /*await subFolder.DeleteAsync();
+                await folder.CreateFolderAsync("books");
+                var k = await folder.GetFoldersAsync();
+                foreach(StorageFolder sf in k)
+                {
+                    await sf.DeleteAsync();
+                }*/
                 if (!await isFilePresent(file.Name, subFolder))
                 {
                     file = await subFolder.CreateFileAsync(file.Name);
                     await FileIO.WriteBytesAsync(file, result);
                     books.AddBook(file.Name);
+                    String str = await new TxtParser().readFile(file);
+                    Book b = new Book(str);
+                    String read = "";
+                    int counter = 0;
+                    var fileFolder = await folder.CreateFolderAsync(file.DisplayName);
+                    MessageDialog dialog = new MessageDialog("Synthesizing speech, this may take a while, please wait");
+                    await dialog.ShowAsync();
+                    while ((read = b.popSegment()) != null)
+                    {
+                        await new Speaker().StoreText(read, file.DisplayName, counter.ToString(), fileFolder);
+                        counter++;
+                    }
+                    dialog = new MessageDialog("File Synthesized, thank you for waiting");
+                    await dialog.ShowAsync();
                     //update bindings
                     this.DataContextChanged += (s, DataContextChangedEventArgs) => this.Bindings.Update();
                 }

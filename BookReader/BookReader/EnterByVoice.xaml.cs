@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -39,7 +40,7 @@ namespace BookReader
             String read = "";
             while((read = b.popSegment())!=null)
             {
-                await new Speaker().SpeakTextAsync(s, this.media);
+                await new Speaker().SpeakTextAsync(read, this.media);
             }
         }
     }

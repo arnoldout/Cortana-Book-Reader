@@ -11,20 +11,40 @@ namespace BookReader
         Queue<BookSegments> book = new Queue<BookSegments>();
         public Book(String strBook)
         {
-            int segmentSize = strBook.Length/50;
-            List<String> b = strBook.Select((x, i) => i).Where(i => i % segmentSize == 0).Select(i => String.Concat(strBook.Skip(i).Take(segmentSize))).ToList();
-            
-            foreach (String s in b)
+            int segmentSize = strBook.Length / 50;
+            //math breaks if segments are too small, due to small file
+
+           /* if (segmentSize > 2)
             {
-                book.Enqueue(new BookSegments(s));
+                try
+                {
+                    List<String> b = strBook.Select((x, i) => i).Where(i => i % segmentSize == 0).Select(i => String.Concat(strBook.Skip(i).Take(segmentSize))).ToList();
+
+                    foreach (String s in b)
+                    {
+                        book.Enqueue(new BookSegments(s));
+                    }
+                }
+                catch (Exception)
+                {
+                    book.Enqueue(new BookSegments(strBook));
+                }
             }
+            else
+            {*/
+                book.Enqueue(new BookSegments(strBook));
+            //}
         }
         
         public String popSegment()
         {
-            BookSegments bs = book.Dequeue();
-            book.Enqueue(bs);
-            return bs.Segment;
+            if (book.Count!=0)
+            {
+                BookSegments bs = book.Dequeue();
+                //book.Enqueue(bs);
+                return bs.Segment;
+            }
+            return null;
         }
     }
 }

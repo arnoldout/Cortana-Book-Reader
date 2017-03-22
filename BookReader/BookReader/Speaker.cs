@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.SpeechSynthesis;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -29,10 +30,29 @@ namespace BookReader
         }
         public async Task SpeakTextAsync(string text, MediaElement media)
         {
-            IRandomAccessStream stream = await this.SynthesizeTextToSpeechAsync("I can't do that dave");
+            IRandomAccessStream stream = await this.SynthesizeTextToSpeechAsync(text);
             media.SetSource(stream, string.Empty);
             media.Play();
             //await media.PlayStreamAsync(stream, true);
+        }
+        {
+            var synthesisStream = await new SpeechSynthesizer().SynthesizeTextToStreamAsync(text);
+            var sf = await lf.CreateFileAsync(fileID+".wav");
+            var writeStream = await sf.OpenAsync(FileAccessMode.ReadWrite);
+            var outputStream = writeStream.GetOutputStreamAt(0);
+            const int BufferSize = 4096;
+            var dataWriter = new DataWriter(outputStream);
+            var buffer = new Windows.Storage.Streams.Buffer(BufferSize);
+            while (synthesisStream.Position < synthesisStream.Size)
+            {
+                await synthesisStream.ReadAsync(buffer, BufferSize, InputStreamOptions.None);
+                dataWriter.WriteBuffer(buffer);
+            }
+            dataWriter.StoreAsync().AsTask().Wait();
+            outputStream.FlushAsync().AsTask().Wait();
+            outputStream.Dispose();
+            writeStream.Dispose();
+        
         }
     }
     public static class MediaElementExtensions
