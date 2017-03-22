@@ -35,6 +35,7 @@ namespace BookReader
             media.Play();
             //await media.PlayStreamAsync(stream, true);
         }
+        public async Task StoreText(string text, String bookName, string fileID, StorageFolder lf)
         {
             var synthesisStream = await new SpeechSynthesizer().SynthesizeTextToStreamAsync(text);
             var sf = await lf.CreateFileAsync(fileID+".wav");
