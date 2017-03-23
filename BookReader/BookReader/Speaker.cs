@@ -38,6 +38,7 @@ namespace BookReader
         public async Task StoreText(string text, String bookName, string fileID, StorageFolder lf)
         {
             var synthesisStream = await new SpeechSynthesizer().SynthesizeTextToStreamAsync(text);
+            string k = synthesisStream.ContentType;
             var sf = await lf.CreateFileAsync(fileID+".wav");
             var writeStream = await sf.OpenAsync(FileAccessMode.ReadWrite);
             var outputStream = writeStream.GetOutputStreamAt(0);

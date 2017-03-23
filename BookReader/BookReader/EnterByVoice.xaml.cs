@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
+using Windows.Media.SpeechSynthesis;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -33,15 +34,33 @@ namespace BookReader
         }
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            //get naviagation params
+            //play it's stored voice file
             this.InitializeComponent();
-            StorageFile commandArgs = e.Parameter as StorageFile;
-            String s = await new TxtParser().readFile(commandArgs);
-            Book b = new Book(s);
-            String read = "";
-            while((read = b.popSegment())!=null)
+            try
             {
-                await new Speaker().SpeakTextAsync(read, this.media);
+                StorageFile commandArgs = e.Parameter as StorageFile;
+                var folder = ApplicationData.Current.LocalFolder;
+                var subFolder = await folder.GetFolderAsync(commandArgs.DisplayName);
+                var q = await subFolder.GetFilesAsync();
+                foreach (StorageFile file in q)
+                {
+                    var stream = await file.OpenAsync(FileAccessMode.Read);
+                    media.SetSource(stream, "audio/wav");
+
+                    media.Play();
+                }
             }
+            catch (FileNotFoundException)
+            {
+                MessageDialog dialog = new MessageDialog("Sorry, we can't find the file");
+                await dialog.ShowAsync();
+            }
+        }
+
+        private void media_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            media.Position = new TimeSpan(0, 0, 7);
         }
     }
 }
