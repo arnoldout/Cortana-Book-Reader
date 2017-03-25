@@ -57,7 +57,7 @@ namespace BookReader
                                     IReadOnlyList<StorageFile> q = null;
                                     try
                                     {
-                                        subFolder = await ApplicationData.Current.LocalFolder.GetFolderAsync(sf.DisplayName);
+                                        subFolder = await folder.GetFolderAsync(sf.Name);
                                         try
                                         {
                                             q = await subFolder.GetFilesAsync();
