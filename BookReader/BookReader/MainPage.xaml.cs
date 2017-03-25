@@ -9,6 +9,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.VoiceCommands;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
@@ -115,6 +116,7 @@ namespace BookReader
                         await new Speaker().StoreText(read, file.DisplayName, counter.ToString(), fileFolder);
                         counter++;
                     }
+                    updateBookPhrases();
                     dialog = new MessageDialog("File Synthesized, thank you for waiting");
                     await dialog.ShowAsync();
                     //update bindings
@@ -141,6 +143,23 @@ namespace BookReader
             var subFolder = await folder.GetFolderAsync("books");
             var sf = await subFolder.GetFileAsync(bookName);
             Frame.Navigate(typeof(EnterByVoice), sf);
+        }
+
+        public async void updateBookPhrases()
+        {
+            List<string> books = new List<string>();
+            var folder = ApplicationData.Current.LocalFolder;
+            var subFolder = await folder.GetFolderAsync("books");
+            var files = await subFolder.GetFilesAsync();
+            foreach (StorageFile sf in files)
+            {
+                books.Add(sf.DisplayName);
+            }
+            VoiceCommandDefinition commandDefinitions;
+            if (VoiceCommandDefinitionManager.InstalledCommandDefinitions.TryGetValue("UniversalAppCommandSet_en-us", out commandDefinitions))
+            {
+                await commandDefinitions.SetPhraseListAsync("bookName", books);
+            }
         }
     }
 }

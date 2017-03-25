@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.VoiceCommands;
+using Windows.Storage;
+using Windows.UI.Popups;
 
 namespace BookReader.Runtime
 {
@@ -16,16 +18,23 @@ namespace BookReader.Runtime
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
+
+            var folder = ApplicationData.Current.LocalFolder;
+            var sub = await folder.GetFolderAsync("books");
+            await sub.CreateFileAsync("RUN Method.txt");
             //Take a service deferral so the service isn&#39;t terminated.
             this.serviceDeferral = taskInstance.GetDeferral();
+            MessageDialog dialog = new MessageDialog("Run Method Hit");
+            await dialog.ShowAsync();
 
-            
             var triggerDetails = taskInstance.TriggerDetails as AppServiceTriggerDetails;
 
             if (triggerDetails != null && triggerDetails.Name == "BookReaderVoiceServiceEndpoint")
             {
                 try
                 {
+                    dialog = new MessageDialog("Run Method Hit");
+                    await dialog.ShowAsync();
                     voiceServiceConnection = VoiceCommandServiceConnection.FromAppServiceTriggerDetails(triggerDetails);
 
                     voiceServiceConnection.VoiceCommandCompleted += VoiceCommandCompleted;
@@ -34,16 +43,12 @@ namespace BookReader.Runtime
 
                     switch (voiceCommand.CommandName)
                     {
-                        case "whenIsTripToDestination":
-                            {
-                                var destination = voiceCommand.Properties["destination"][0];
-                                SendCompletionMessageForDestination(destination);
-                                break;
-                            }
                         case "readBook":
                             {
-                                var destination = voiceCommand.Properties["read"][0];
-                                SendCompletionMessageForDestination(destination);
+                                dialog = new MessageDialog("Run Method Hit");
+                                await dialog.ShowAsync();
+                                var book = voiceCommand.Properties["read"][0];
+                                SendCompletionMessageForDestination(book);
                                 break;
                             }
                         // As a last resort, launch the app in the foreground.

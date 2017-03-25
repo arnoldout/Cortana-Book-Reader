@@ -140,7 +140,69 @@ namespace BookReader
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
-            book = "commands.txt";
+            if (args.Kind == ActivationKind.VoiceCommand)
+            {
+                try
+                {
+                    // now get the parameters pased in
+                    VoiceCommandActivatedEventArgs commandArgs = args as VoiceCommandActivatedEventArgs;
+                    SpeechRecognitionResult speechRecognitionResult = commandArgs.Result;
+                    string voiceCommandName = speechRecognitionResult.RulePath[0];
+                    string textSpoken = speechRecognitionResult.Text;
+                    IReadOnlyList<string> recognisedVoiceCommandPhrases;
+                    MessageDialog msgDialog = new MessageDialog("vcn:" + voiceCommandName + "txtspn" + textSpoken);
+                    await msgDialog.ShowAsync();
+                    System.Diagnostics.Debug.WriteLine("Voice CommandName: " + voiceCommandName);
+                    System.Diagnostics.Debug.WriteLine("text Spoken: " + textSpoken);
+
+                    switch (voiceCommandName)
+                    {
+                        case "readBook":
+                            {
+                                MessageDialog dialog = new MessageDialog("Still just hit the switch");
+                                await dialog.ShowAsync();
+                                string bookName = this.SemanticInterpretation("bookName", speechRecognitionResult);
+                                var folder = ApplicationData.Current.LocalFolder;
+                                var subFolder = await folder.GetFolderAsync("books");
+                                var files = await subFolder.GetFilesAsync();
+                                foreach (StorageFile sf in files)
+                                {
+                                    msgDialog = new MessageDialog("Looking for " + bookName + ", found " + sf.Name);
+                                    await msgDialog.ShowAsync();
+
+                                    if (sf.DisplayName.Equals(bookName))
+                                    {
+                                        book = sf.Name;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        default:
+                            {
+                                msgDialog.Content = "Unknown Command";
+                                break;
+
+                            }
+                    }   // end Switch(voiceCommandName)
+
+                    System.Diagnostics.Debug.WriteLine("go to main page Now ");
+                }
+                catch (Exception)
+                {
+                    MessageDialog msgDialog = new MessageDialog("Crashed");
+                    await msgDialog.ShowAsync();
+                }
+            }
+            else if (args.Kind == ActivationKind.Protocol)
+            {
+                MessageDialog dialog = new MessageDialog("Hit Protocol");
+                await dialog.ShowAsync();
+                var commandArgs = args as ProtocolActivatedEventArgs;
+                Windows.Foundation.WwwFormUrlDecoder decoder = new Windows.Foundation.WwwFormUrlDecoder(commandArgs.Uri.Query);
+                var destination = decoder.GetFirstValueByName("LaunchContext");
+
+            }
 
             if (rootFrame.Content == null)
             {
@@ -151,6 +213,7 @@ namespace BookReader
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
         }
     
         /// <summary>

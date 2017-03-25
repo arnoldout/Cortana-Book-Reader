@@ -6,8 +6,8 @@
     <Command Name="readBook">
       <Example> Read Alice in Wonderland </Example>
       <ListenFor RequireAppName="AfterPhrase"> read [the] [a] [book] {bookName} </ListenFor>
-      <Feedback> Reading {bookName} </Feedback> 
-      <Navigate />
+      <Feedback> Reading {bookName} </Feedback>
+      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
     </Command>
     <PhraseList Label="bookName">
       <Item>Alice in WonderLand</Item>
