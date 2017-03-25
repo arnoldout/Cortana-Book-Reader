@@ -152,12 +152,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BookReaderRuntimeComponent\BookReaderRuntimeComponent.csproj">
-      <Project>{6ce244f1-2766-45cd-884d-c2ee900d28b8}</Project>
-      <Name>BookReaderRuntimeComponent</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

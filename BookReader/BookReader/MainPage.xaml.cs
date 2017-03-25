@@ -50,6 +50,10 @@ namespace BookReader
             var archive = await localFolder.GetFileAsync(zipPath);
             ZipFile.ExtractToDirectory(archive.Path, localFolder.Path);
         }
+        public void ReadBook()
+        {
+            return;
+        }
 
         private async void ReadBook_Click(object sender, RoutedEventArgs e)
         {
@@ -78,7 +82,15 @@ namespace BookReader
                     }
                 }
                 var folder = ApplicationData.Current.LocalFolder;
-                var subFolder = await folder.GetFolderAsync("books");
+                StorageFolder subFolder;
+                try
+                {
+                    subFolder = await folder.GetFolderAsync("books");
+                }
+                catch (FileNotFoundException)
+                {
+                    subFolder = await folder.CreateFolderAsync("books");
+                }
                 /*await subFolder.DeleteAsync();
                 await folder.CreateFolderAsync("books");
                 var k = await folder.GetFoldersAsync();

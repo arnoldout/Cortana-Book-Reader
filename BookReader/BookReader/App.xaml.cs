@@ -36,6 +36,7 @@ namespace BookReader
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+        public static String book = "";
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -44,7 +45,7 @@ namespace BookReader
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            
+
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -80,12 +81,7 @@ namespace BookReader
 
                 VoiceCommandDefinition commandDefinitions;
 
-                String countryCode = CultureInfo.CurrentCulture.Name.ToLower();
-                if (countryCode.Length == 0)
-                {
-                    countryCode = "en-us";
-                }
-                if (VoiceCommandDefinitionManager.InstalledCommandDefinitions.TryGetValue("UniversalAppCommandSet_en-gb", out commandDefinitions))
+                if (VoiceCommandDefinitionManager.InstalledCommandDefinitions.TryGetValue("UniversalAppCommandSet_en-us", out commandDefinitions))
                 {
                     List<string> books = new List<string>();
                     var folder = ApplicationData.Current.LocalFolder;
@@ -101,7 +97,8 @@ namespace BookReader
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("VCD load error. ", ex);
+                MessageDialog msgDialog = new MessageDialog("Error Reading VCD File " + ex);
+                await msgDialog.ShowAsync();
             }
 
             if (e.PrelaunchActivated == false)
@@ -123,69 +120,39 @@ namespace BookReader
         /// <param name="e">Event data for the event.</param>
         protected override async void OnActivated(IActivatedEventArgs args)
         {
-            base.OnActivated(args);
-            // handle when the app is launched by Cortana
-            if (args.Kind != ActivationKind.VoiceCommand) return;
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                this.DebugSettings.EnableFrameRateCounter = true;
+            }
+#endif
             Frame rootFrame = Window.Current.Content as Frame;
 
-
-            try
-            {
-                // now get the parameters pased in
-                VoiceCommandActivatedEventArgs commandArgs = args as VoiceCommandActivatedEventArgs;
-                SpeechRecognitionResult speechRecognitionResult = commandArgs.Result;
-                string voiceCommandName = speechRecognitionResult.RulePath[0];
-                string textSpoken = speechRecognitionResult.Text;
-                IReadOnlyList<string> recognisedVoiceCommandPhrases;
-                MessageDialog msgDialog = new MessageDialog("vcn:"+voiceCommandName+"txtspn"+textSpoken);
-                await msgDialog.ShowAsync();
-                System.Diagnostics.Debug.WriteLine("Voice CommandName: " + voiceCommandName);
-                System.Diagnostics.Debug.WriteLine("text Spoken: " + textSpoken);
-
-
-                switch (voiceCommandName)
-                {
-                    case "readBook":
-                        {
-                            string bookName = this.SemanticInterpretation("bookName", speechRecognitionResult);
-                            var folder = ApplicationData.Current.LocalFolder;
-                            var subFolder = await folder.GetFolderAsync("books");
-                            var files = await subFolder.GetFilesAsync();
-                            foreach(StorageFile sf in files)
-                            {
-                                if(sf.DisplayName.Equals(bookName))
-                                {
-                                    rootFrame.Navigate(typeof(EnterByVoice),sf);
-                                }
-                            }
-                            break;
-                        }
-                    default:
-                        {
-                            msgDialog.Content = "Unknown Command";
-                            break;
-
-                        }
-                }   // end Switch(voiceCommandName)
-
-                System.Diagnostics.Debug.WriteLine("go to main page Now ");
-            }
-            catch (Exception)
-            {
-                MessageDialog msgDialog = new MessageDialog("Crashed");
-                await msgDialog.ShowAsync();
-            }
+            // Do not repeat app initialization when the Window already has content,
+            // just ensure that the window is active
             if (rootFrame == null)
             {
-
+                // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
-                //App.NavigationService = new NavigationService(rootFrame);
+
                 rootFrame.NavigationFailed += OnNavigationFailed;
+
+                // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
-            rootFrame.Navigate(typeof(EnterByVoice));//,args);
+            book = "commands.txt";
 
+            if (rootFrame.Content == null)
+            {
+                // When the navigation stack isn't restored navigate to the first page,
+                // configuring the new page by passing required information as a navigation
+                // parameter
+                rootFrame.Navigate(typeof(EnterByVoice), args.PreviousExecutionState);
+            }
+            // Ensure the current window is active
+            Window.Current.Activate();
         }
+    
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>
