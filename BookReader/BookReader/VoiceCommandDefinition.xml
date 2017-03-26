@@ -7,8 +7,21 @@
       <Example> Read Alice in Wonderland </Example>
       <ListenFor RequireAppName="AfterPhrase"> read [the] [a] [book] {bookName} </ListenFor>
       <Feedback> Reading {bookName} </Feedback>
+      <Navigate/>
+    </Command>
+    <Command Name="bookCount">
+      <Example> How many books do are in my library </Example>
+      <ListenFor RequireAppName="BeforePhrase"> how [many] [much] books [do] [are] [I] [have] in [my] library </ListenFor>
+      <Feedback> Finding number of books in library </Feedback>
       <VoiceCommandService Target="BookReaderVoiceCommandService"/>
     </Command>
+    <Command Name="deleteBook">
+      <Example> Delete Alice in Wonderland from </Example>
+      <ListenFor RequireAppName="ExplicitlySpecified"> [please] delete {bookName} [from] [in] [using] [library] [from] [in] [using] {builtin:AppName} </ListenFor>
+      <Feedback> Deleting {bookName} </Feedback>
+      <VoiceCommandService Target="BookReaderVoiceCommandService"/>
+    </Command>
+
     <PhraseList Label="bookName">
       <Item>Alice in WonderLand</Item>
     </PhraseList>

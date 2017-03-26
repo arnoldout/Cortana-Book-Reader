@@ -19,36 +19,49 @@ namespace BookReader.Runtime
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
 
-            var folder = ApplicationData.Current.LocalFolder;
-            var sub = await folder.GetFolderAsync("books");
-            await sub.CreateFileAsync("RUN Method.txt");
             //Take a service deferral so the service isn&#39;t terminated.
             this.serviceDeferral = taskInstance.GetDeferral();
-            MessageDialog dialog = new MessageDialog("Run Method Hit");
-            await dialog.ShowAsync();
 
             var triggerDetails = taskInstance.TriggerDetails as AppServiceTriggerDetails;
-
-            if (triggerDetails != null && triggerDetails.Name == "BookReaderVoiceServiceEndpoint")
+           
+            if (triggerDetails != null && triggerDetails.Name == "BookReaderVoiceCommandService")
             {
                 try
                 {
-                    dialog = new MessageDialog("Run Method Hit");
-                    await dialog.ShowAsync();
                     voiceServiceConnection = VoiceCommandServiceConnection.FromAppServiceTriggerDetails(triggerDetails);
 
                     voiceServiceConnection.VoiceCommandCompleted += VoiceCommandCompleted;
 
                     VoiceCommand voiceCommand = await voiceServiceConnection.GetVoiceCommandAsync();
-
                     switch (voiceCommand.CommandName)
                     {
-                        case "readBook":
+
+                        case "bookCount":
                             {
-                                dialog = new MessageDialog("Run Method Hit");
-                                await dialog.ShowAsync();
-                                var book = voiceCommand.Properties["read"][0];
-                                SendCompletionMessageForDestination(book);
+                                SendCompletionMessageForDestination("Library");
+                                break;
+                            }
+                        case "deleteBook":
+                            {
+                                var book = voiceCommand.Properties["bookName"][0];
+                                var userMessage = new VoiceCommandUserMessage();
+                                userMessage.DisplayMessage = book + "deleted";
+                                userMessage.SpokenMessage = "File deleted";
+                                try
+                                {
+                                    var folder = ApplicationData.Current.LocalFolder;
+                                    var subFolder = await folder.GetFolderAsync("books");
+                                    var a = await folder.GetFolderAsync(book + ".txt");
+                                    var b = await subFolder.GetFileAsync(book + ".txt");
+                                    await a.DeleteAsync();
+                                    await b.DeleteAsync();
+                                    
+                                    await voiceServiceConnection.ReportSuccessAsync(VoiceCommandResponse.CreateResponse(userMessage));
+                                }
+                                catch(Exception)
+                                {
+                                    await voiceServiceConnection.ReportFailureAsync(VoiceCommandResponse.CreateResponse(userMessage));
+                                }
                                 break;
                             }
                         // As a last resort, launch the app in the foreground.
