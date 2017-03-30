@@ -43,6 +43,7 @@ namespace BookReader
                     var folder = ApplicationData.Current.LocalFolder;
                     var subFolder = await folder.GetFolderAsync(commandArgs.DisplayName);
                     var q = await subFolder.GetFilesAsync();
+                    txtNowReading.Text = "Now Reading " + commandArgs.Name;
                     foreach (StorageFile file in q)
                     {
                         var stream = await file.OpenAsync(FileAccessMode.Read);
@@ -74,6 +75,7 @@ namespace BookReader
                         subFolder = await folder.GetFolderAsync(sf.Name);
                         q = await subFolder.GetFilesAsync();
 
+                        txtNowReading.Text = "Now Reading " + sf.Name;
                         foreach (StorageFile file in q)
                         {
                             var stream = await file.OpenAsync(FileAccessMode.Read);
@@ -89,6 +91,11 @@ namespace BookReader
         private void media_MediaOpened(object sender, RoutedEventArgs e)
         {
             media.Position = new TimeSpan(0, 0, 7);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MainPage));
         }
     }
 }

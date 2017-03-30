@@ -66,7 +66,6 @@ namespace BookReader
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
             //only need txt or epub files
             picker.FileTypeFilter.Add(".txt");
-            picker.FileTypeFilter.Add(".epub");
 
             Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
 
@@ -103,13 +102,13 @@ namespace BookReader
                 {
                     file = await subFolder.CreateFileAsync(file.Name);
                     await FileIO.WriteBytesAsync(file, result);
-                    books.AddBook(file.Name);
                     String str = await new TxtParser().readFile(file);
                     Book b = new Book(str);
                     String read = "";
                     int counter = 0;
                     var fileFolder = await folder.CreateFolderAsync(file.DisplayName);
-                    MessageDialog dialog = new MessageDialog("Synthesizing speech, this may take a while, please wait");
+                    MessageDialog dialog = new MessageDialog("Synthesizing speech, this can take a few minutes, we'll let you know when we're done" +
+                        "Please don't close the app");
                     await dialog.ShowAsync();
                     while ((read = b.popSegment()) != null)
                     {
@@ -120,6 +119,7 @@ namespace BookReader
                     dialog = new MessageDialog("File Synthesized, thank you for waiting");
                     await dialog.ShowAsync();
                     //update bindings
+                    books.AddBook(file.Name);
                     this.DataContextChanged += (s, DataContextChangedEventArgs) => this.Bindings.Update();
                 }
                 else
