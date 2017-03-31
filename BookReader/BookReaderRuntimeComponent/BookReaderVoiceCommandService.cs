@@ -53,11 +53,6 @@ namespace BookReader.Runtime
                                     var a = await folder.GetFolderAsync(book + ".txt");
                                     var b = await subFolder.GetFileAsync(book + ".txt");
                                     await a.DeleteAsync();
-                                    userMessage = new VoiceCommandUserMessage();
-                                    userMessage.DisplayMessage = "Deleting book";
-                                    userMessage.SpokenMessage = "Deleting Book";
-                                    progressReport = VoiceCommandResponse.CreateResponse(userMessage);
-                                    await voiceServiceConnection.ReportProgressAsync(progressReport);
                                     await b.DeleteAsync();
                                     
                                     await voiceServiceConnection.ReportSuccessAsync(VoiceCommandResponse.CreateResponse(userMessage));
