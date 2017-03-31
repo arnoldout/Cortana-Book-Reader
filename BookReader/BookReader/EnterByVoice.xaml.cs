@@ -60,6 +60,7 @@ namespace BookReader
             }
 
         }
+
         public async void playBook()
         {
             if (!App.book.Equals(""))

@@ -94,7 +94,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="AnimalFarm.epub" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +121,6 @@
     <None Include="BookReader_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="19033-8.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
