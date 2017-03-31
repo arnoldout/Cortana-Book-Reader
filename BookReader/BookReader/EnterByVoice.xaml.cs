@@ -60,6 +60,7 @@ namespace BookReader
             }
 
         }
+
         public async void playBook()
         {
             if (!App.book.Equals(""))
@@ -90,7 +91,7 @@ namespace BookReader
 
         private void media_MediaOpened(object sender, RoutedEventArgs e)
         {
-            media.Position = new TimeSpan(0, 0, 7);
+            //media.Position = new TimeSpan(0, 0, 7);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
