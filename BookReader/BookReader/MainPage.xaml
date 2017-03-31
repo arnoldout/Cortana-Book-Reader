@@ -17,7 +17,7 @@
         <Grid Grid.Row="0" Background="#8155A4">
             <TextBlock Text="Books" FontFamily="Verdana" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Background="White">
             <MediaElement x:Name="mediaElement"/>
             
             <ListView Background="Transparent" FontFamily="Verdana" HorizontalAlignment="Stretch" x:Name="listBooks" ItemsSource="{x:Bind books.Books, Mode=OneWay}" SelectionChanged="listBooks_SelectionChanged">

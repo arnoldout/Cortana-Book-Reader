@@ -35,16 +35,15 @@ namespace BookReader.Runtime
                     VoiceCommand voiceCommand = await voiceServiceConnection.GetVoiceCommandAsync();
                     switch (voiceCommand.CommandName)
                     {
-
-                        case "bookCount":
-                            {
-                                SendCompletionMessageForDestination("Library");
-                                break;
-                            }
                         case "deleteBook":
                             {
-                                var book = voiceCommand.Properties["bookName"][0];
                                 var userMessage = new VoiceCommandUserMessage();
+                                userMessage.DisplayMessage = "Deleting book";
+                                userMessage.SpokenMessage = "Deleting Book";
+                                var progressReport = VoiceCommandResponse.CreateResponse(userMessage);
+                                await voiceServiceConnection.ReportProgressAsync(progressReport);
+                                var book = voiceCommand.Properties["bookName"][0];
+                                userMessage = new VoiceCommandUserMessage();
                                 userMessage.DisplayMessage = book + "deleted";
                                 userMessage.SpokenMessage = "File deleted";
                                 try
@@ -54,12 +53,19 @@ namespace BookReader.Runtime
                                     var a = await folder.GetFolderAsync(book + ".txt");
                                     var b = await subFolder.GetFileAsync(book + ".txt");
                                     await a.DeleteAsync();
+                                    userMessage = new VoiceCommandUserMessage();
+                                    userMessage.DisplayMessage = "Deleting book";
+                                    userMessage.SpokenMessage = "Deleting Book";
+                                    progressReport = VoiceCommandResponse.CreateResponse(userMessage);
+                                    await voiceServiceConnection.ReportProgressAsync(progressReport);
                                     await b.DeleteAsync();
                                     
                                     await voiceServiceConnection.ReportSuccessAsync(VoiceCommandResponse.CreateResponse(userMessage));
                                 }
                                 catch(Exception)
                                 {
+                                    userMessage.DisplayMessage = "Something went wrong, "+book+" not deleted";
+                                    userMessage.SpokenMessage = "Something went wrong, File not deleted";
                                     await voiceServiceConnection.ReportFailureAsync(VoiceCommandResponse.CreateResponse(userMessage));
                                 }
                                 break;

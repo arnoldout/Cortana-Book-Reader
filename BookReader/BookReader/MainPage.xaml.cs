@@ -108,7 +108,7 @@ namespace BookReader
                     int counter = 0;
                     var fileFolder = await folder.CreateFolderAsync(file.DisplayName);
                     MessageDialog dialog = new MessageDialog("Synthesizing speech, this can take a few minutes, we'll let you know when we're done" +
-                        "Please don't close the app");
+                        " Please don't close the app");
                     await dialog.ShowAsync();
                     while ((read = b.popSegment()) != null)
                     {
